@@ -1,0 +1,4 @@
+module OpenGateway
+  VERSION = '2.5.0'
+end
+

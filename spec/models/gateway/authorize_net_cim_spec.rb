@@ -3,9 +3,9 @@ require 'spec_helper'
 describe Spree::Gateway::AuthorizeNetCim do
   let (:gateway) { described_class.new }
 
-  context '.provider_class' do
+  context '.gateway_class' do
     it 'is a AuthorizeNetCim gateway' do
-      expect(gateway.provider_class).to eq ::Spree::Gateway::AuthorizeNetCim
+      expect(gateway_class).to eq ::Spree::Gateway::AuthorizeNetCim
     end
   end
 
@@ -16,12 +16,12 @@ describe Spree::Gateway::AuthorizeNetCim do
   end
 
   describe 'options' do
-    it 'include :test => true when test server is "test"' do
+    it 'include test: true when test server is "test"' do
       gateway.preferred_server = "test"
       expect(gateway.options[:test]).to be true
     end
 
-    it 'does not include :test when test server is "live"' do
+    it 'does not include test: when test server is "live"' do
       gateway.preferred_server = "live"
       expect(gateway.options[:test]).to be_nil
     end

@@ -12,7 +12,7 @@ module Spree
     preference :maestro_login, :string
     preference :visa_login, :string
 
-    def provider_class
+    def gateway_class
       ActiveMerchant::Billing::WorldpayGateway
     end
 

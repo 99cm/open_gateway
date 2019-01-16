@@ -3,12 +3,12 @@ module Spree
     preference :login, :string
     preference :password, :string
 
-    def provider_class
+    def gateway_class
       ActiveMerchant::Billing::EwayRapidGateway
     end
 
     def options
-      super().merge(:test => self.preferred_test_mode)
+      super().merge(test: self.preferred_test_mode)
     end
   end
 end

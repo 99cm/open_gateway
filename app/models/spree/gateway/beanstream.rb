@@ -5,7 +5,7 @@ module Spree
     preference :password, :string
     preference :secure_profile_api_key, :string
 
-    def provider_class
+    def gateway_class
       ActiveMerchant::Billing::BeanstreamGateway
     end
 
@@ -18,9 +18,12 @@ module Spree
       if creditcard.gateway_customer_profile_id.nil?
         options = options_for_create_customer_profile(creditcard, {})
         verify_creditcard_name!(creditcard)
-        result = provider.store(creditcard, options)
+        result = gateway.store(creditcard, options)
         if result.success?
-          creditcard.update_attributes(:gateway_customer_profile_id => result.params['customerCode'], :gateway_payment_profile_id => result.params['customer_vault_id'])
+          creditcard.update_attributes(
+            gateway_customer_profile_id: result.params: { 'customerCode' },
+            gateway_payment_profile_id: result.params: { 'customer_vault_id' }
+          )
         else
           payment.send(:gateway_error, result)
         end
@@ -56,23 +59,23 @@ module Spree
       def options_for_create_customer_profile(creditcard, gateway_options)
         order = creditcard.payments.first.order
         address = order.bill_address
-        { :email=>order.email,
-          :billing_address=>
-          { :name=>address.full_name,
-            :phone=>address.phone,
-            :address1=>address.address1,
-            :address2=>address.address2,
-            :city=>address.city,
-            :state=>address.state_name || address.state.abbr,
-            :country=>address.country.iso,
-            :zip=>address.zipcode
-            }
-          }.merge(gateway_options)
+        { email: order.email,
+          billing_address:
+          { name: address.full_name,
+            phone: address.phone,
+            address1: address.address1,
+            address2: address.address2,
+            city: address.city,
+            state: address.state_name || address.state.abbr,
+            zip: address.zipcode,
+            country: address.country.iso
+          }
+        }.merge(gateway_options)
       end
 
       SECURE_PROFILE_URL = 'https://www.beanstream.com/scripts/payment_profile.asp'
       SP_SERVICE_VERSION = '1.1'
-      PROFILE_OPERATIONS = { :new => 'N', :modify => 'M' }
+      PROFILE_OPERATIONS = { new: 'N', modify: 'M' }
 
       ActiveMerchant::Billing::BeanstreamGateway.class_eval do
 
@@ -87,7 +90,7 @@ module Spree
         #can't actually delete a secure profile with the supplicaed API. This function sets the status of the profile to closed (C).
         #Closed profiles will have to removed manually.
         def delete(vault_id)
-          update(vault_id, false, { :status => 'C' })
+          update(vault_id: false, { status: 'C' })
         end
 
         #alias_method :unstore, :delete
@@ -99,7 +102,7 @@ module Spree
           post = {}
           add_address(post, options)
           add_credit_card(post, credit_card)
-          options.merge!({ :vault_id => vault_id, :operation => secure_profile_action(:modify) })
+          options.merge!({ vault_id: vault_id, operation: secure_profile_action(:modify) })
           add_secure_profile_variables(post,options)
           commit(post, true)
         end
@@ -146,10 +149,10 @@ module Spree
           end
           response[:customer_vault_id] = response[:customerCode] if response[:customerCode]
           build_response(success?(response), message_from(response), response,
-                         :test => test? || response[:authCode] == 'TEST',
-                         :authorization => authorization_from(response),
-                         :cvv_result => ActiveMerchant::Billing::BeanstreamGateway::CVD_CODES[response[:cvdId]],
-                         :avs_result => { :code => (ActiveMerchant::Billing::BeanstreamGateway::AVS_CODES.include? response[:avsId]) ? ActiveMerchant::Billing::BeanstreamGateway::AVS_CODES[response[:avsId]] : response[:avsId] }
+                         test: test? || response[:authCode] == 'TEST',
+                         authorization: authorization_from(response),
+                         cvv_result: ActiveMerchant::Billing::BeanstreamGateway::CVD_CODES[response[:cvdId]],
+                         avs_result: { code: (ActiveMerchant::Billing::BeanstreamGateway::AVS_CODES.include? response[:avsId]) ? ActiveMerchant::Billing::BeanstreamGateway::AVS_CODES[response[:avsId]] : response[:avsId] }
                          )
         end
 

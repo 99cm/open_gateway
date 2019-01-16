@@ -1,18 +1,10 @@
 module Spree
-  class Gateway::AuthorizeNetCim < Gateway
+  class Gateway::AuthorizeNetCim < PaymentMethod::CreditCard
     preference :login, :string
     preference :password, :string
     preference :server, :string, default: "test"
     preference :test_mode, :boolean, default: false
     preference :validate_on_profile_create, :boolean, default: false
-
-    ActiveMerchant::Billing::Response.class_eval do
-      attr_writer :authorization
-    end
-
-    def provider_class
-      self.class
-    end
 
     def options
       if !['live','test'].include?(self.preferred_server)

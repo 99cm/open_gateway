@@ -22,7 +22,7 @@ module Spree
 
     def provider
       provider_instance = super
-      Braintree::Configuration.custom_user_agent = "Spree #{Spree.version}"
+      Braintree::Configuration.custom_user_agent = "open_gateway #{OpenGateway::VERSION}"
       Braintree::Configuration.environment = preferred_environment.to_sym
       Braintree::Configuration.merchant_id = preferred_merchant_id
       Braintree::Configuration.public_key = preferred_public_key
@@ -31,7 +31,7 @@ module Spree
       provider_instance
     end
 
-    def provider_class
+    def gateway_class
       ActiveMerchant::Billing::BraintreeBlueGateway
     end
 

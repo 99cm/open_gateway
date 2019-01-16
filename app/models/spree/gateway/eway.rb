@@ -7,12 +7,12 @@ module Spree
       true
     end
 
-    def provider_class
+    def gateway_class
       ActiveMerchant::Billing::EwayGateway
     end
 
     def options
-      super().merge(:test => self.preferred_test_mode)
+      super().merge(test: self.preferred_test_mode)
     end
   end
 end

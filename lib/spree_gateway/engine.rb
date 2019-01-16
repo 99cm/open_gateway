@@ -1,8 +1,6 @@
 module SpreeGateway
   class Engine < Rails::Engine
-    engine_name 'spree_gateway'
-
-    config.autoload_paths += %W(#{config.root}/lib)
+    engine_name 'open_gateway'
 
     initializer "spree.gateway.payment_methods", :after => "spree.register.payment_methods" do |app|
       app.config.spree.payment_methods << Spree::Gateway::AuthorizeNet
@@ -21,7 +19,6 @@ module SpreeGateway
       app.config.spree.payment_methods << Spree::Gateway::Migs
       app.config.spree.payment_methods << Spree::Gateway::Moneris
       app.config.spree.payment_methods << Spree::Gateway::PayJunction
-      app.config.spree.payment_methods << Spree::Gateway::PayPalGateway
       app.config.spree.payment_methods << Spree::Gateway::PayflowPro
       app.config.spree.payment_methods << Spree::Gateway::Paymill
       app.config.spree.payment_methods << Spree::Gateway::PinGateway
@@ -37,12 +34,6 @@ module SpreeGateway
     end
 
     def self.activate
-      if SpreeGateway::Engine.frontend_available?
-        Rails.application.config.assets.precompile += [
-          'lib/assets/javascripts/spree/frontend/spree_gateway.js',
-          'lib/assets/stylesheets/spree/frontend/spree_gateway.css',
-        ]
-      end
       Dir.glob(File.join(File.dirname(__FILE__), '../../app/**/spree/*_decorator*.rb')) do |c|
         Rails.application.config.cache_classes ? require(c) : load(c)
       end
@@ -60,12 +51,8 @@ module SpreeGateway
       paths["app/views"] << "lib/views/backend"
     end
 
-    paths['app/controllers'] << 'lib/controllers'
-
     if self.frontend_available?
       paths["app/views"] << "lib/views/frontend"
     end
-
-    config.to_prepare &method(:activate).to_proc
   end
 end

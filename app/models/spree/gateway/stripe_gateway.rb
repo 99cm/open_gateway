@@ -1,5 +1,5 @@
 module Spree
-  class Gateway::StripeGateway < Gateway
+  class Gateway::StripeGateway < PaymentMethod::CreditCard
     preference :secret_key, :string
     preference :publishable_key, :string
 
@@ -20,7 +20,7 @@ module Spree
       'stripe'
     end
 
-    def provider_class
+    def gateway_class
       ActiveMerchant::Billing::StripeGateway
     end
 
@@ -29,27 +29,27 @@ module Spree
     end
 
     def purchase(money, creditcard, gateway_options)
-      provider.purchase(*options_for_purchase_or_auth(money, creditcard, gateway_options))
+      gateway.purchase(*options_for_purchase_or_auth(money, creditcard, gateway_options))
     end
 
     def authorize(money, creditcard, gateway_options)
-      provider.authorize(*options_for_purchase_or_auth(money, creditcard, gateway_options))
+      gateway.authorize(*options_for_purchase_or_auth(money, creditcard, gateway_options))
     end
 
     def capture(money, response_code, gateway_options)
-      provider.capture(money, response_code, gateway_options)
+      gateway.capture(money, response_code, gateway_options)
     end
 
     def credit(money, creditcard, response_code, gateway_options)
-      provider.refund(money, response_code, {})
+      gateway.refund(money, response_code, {})
     end
 
     def void(response_code, creditcard, gateway_options)
-      provider.void(response_code, {})
+      gateway.void(response_code, {})
     end
 
     def cancel(response_code)
-      provider.void(response_code, {})
+      gateway.void(response_code, {})
     end
 
     def create_profile(payment)
@@ -66,7 +66,7 @@ module Spree
         creditcard = source
       end
 
-      response = provider.store(creditcard, options)
+      response = gateway.store(creditcard, options)
       if response.success?
         cc_type=payment.source.cc_type
         response_cc_type = response.params['sources']['data'].first['brand']

@@ -4,12 +4,12 @@ module Spree
     preference :password, :password
     preference :partner, :string
 
-    def provider_class
+    def gateway_class
       ActiveMerchant::Billing::PayflowGateway
     end
 
     def options
-      super().merge(:test => self.preferred_test_mode)
+      super().merge(test: self.preferred_test_mode)
     end
   end
 end

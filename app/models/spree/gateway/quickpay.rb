@@ -2,7 +2,7 @@ module Spree
   class Gateway::Quickpay < Gateway
     preference :api_key, :string
 
-    def provider_class
+    def gateway_class
       ActiveMerchant::Billing::QuickpayV10Gateway
     end
   end

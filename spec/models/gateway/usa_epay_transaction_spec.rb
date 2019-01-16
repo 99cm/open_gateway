@@ -41,9 +41,9 @@ describe Spree::Gateway::UsaEpayTransaction do
     end
   end
 
-  context '.provider_class' do
+  context '.gateway_class' do
     it 'is a UsaEpayTransaction gateway' do
-      expect(@gateway.provider_class).to eq ::ActiveMerchant::Billing::UsaEpayTransactionGateway
+      expect(gateway_class).to eq ::ActiveMerchant::Billing::UsaEpayTransactionGateway
     end
   end
 end

@@ -2,7 +2,7 @@ module Spree
   class Gateway::UsaEpayTransaction < Gateway
     preference :login, :string
 
-    def provider_class
+    def gateway_class
       ActiveMerchant::Billing::UsaEpayTransactionGateway
     end
   end

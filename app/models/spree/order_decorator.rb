@@ -1,4 +1,4 @@
-module SpreeGateway
+module OpenGateway
   module ApplePayOrderDecorator
     def confirmation_required?
       return false if paid_with_apple_pay?
@@ -12,4 +12,4 @@ module SpreeGateway
   end
 end
 
-Spree::Order.prepend SpreeGateway::ApplePayOrderDecorator
+Spree::Order.prepend OpenGateway::ApplePayOrderDecorator
