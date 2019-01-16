@@ -1,4 +1,4 @@
-Solidus Gateway
+Open Gateway
 ===============
 
 Community supported Open Payment Methods. It works as a wrapper for
