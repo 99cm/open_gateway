@@ -1,8 +1,7 @@
 Open Gateway
 ===============
 
-Community supported Open Payment Methods. It works as a wrapper for
-[active_merchant](https://github.com/activemerchant/active_merchant) gateway. 
+A collection of payment methods supported by [Open](https://github.com/99cm/open). 
 
 Supported payment gateways:
 * Authorize.net (with CIM support)
