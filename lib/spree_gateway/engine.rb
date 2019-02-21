@@ -54,5 +54,9 @@ module SpreeGateway
     if self.frontend_available?
       paths["app/views"] << "lib/views/frontend"
     end
+
+    if self.api_available?
+      paths["app/views"] << "lib/views/api"
+    end
   end
 end
